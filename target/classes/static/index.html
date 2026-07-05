@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NumeriCalc — Kalkulator Metode Numerik</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">∫</span>
+        <span class="logo-text">NumeriCalc</span>
+      </div>
+      <nav class="nav">
+        <a href="#calculator" class="nav-link active">Kalkulator</a>
+        <a href="#visualizer" class="nav-link">Visualisasi</a>
+        <a href="#theory" class="nav-link">Teori</a>
+        <a href="#history" class="nav-link">Riwayat</a>
+      </nav>
+      <div class="header-badge">Metode Numerik</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">PROJECT METODE NUMERIK</div>
+    <h1 class="hero-title">
+      Integrasi<br />
+      <span class="hero-accent">Numerik</span><br />
+      Presisi
+    </h1>
+    <p class="hero-desc">
+      Kalkulator interaktif untuk metode <strong>Kaidah Segiempat</strong>,
+      <strong>Kaidah Titik Tengah</strong>, dan <strong>Kaidah Trapesium</strong>
+      dengan visualisasi real-time.
+    </p>
+    <div class="hero-pills">
+      <div class="pill">Segiempat</div>
+      <div class="pill pill-accent">Titik Tengah</div>
+      <div class="pill pill-trap">Trapesium</div>
+      <div class="pill">Grafik Dinamis</div>
+      <div class="pill">Error Analysis</div>
+    </div>
+    <a href="#calculator" class="scroll-btn">
+      <span>Mulai Hitung</span>
+      <span class="arrow">↓</span>
+    </a>
+  </section>
+
+  <!-- Calculator Section -->
+  <section id="calculator" class="section">
+    <div class="section-label">KALKULATOR</div>
+    <h2 class="section-title">Hitung Integral</h2>
+
+    <div class="calc-layout">
+      <!-- Input Panel -->
+      <div class="panel panel-input">
+        <div class="panel-header">
+          <span class="panel-title">⟨ INPUT PARAMETER ⟩</span>
+        </div>
+
+        <!-- Method Selector -->
+        <div class="method-selector">
+          <button class="method-btn active" data-method="rectangle" onclick="selectMethod('rectangle', this)">
+            <div class="method-icon method-icon-rect">▬</div>
+            <div class="method-info">
+              <div class="method-name">Kaidah Segiempat</div>
+              <div class="method-desc">Rectangle Rule</div>
+            </div>
+          </button>
+          <button class="method-btn" data-method="midpoint" onclick="selectMethod('midpoint', this)">
+            <div class="method-icon method-icon-mid">◆</div>
+            <div class="method-info">
+              <div class="method-name">Titik Tengah</div>
+              <div class="method-desc">Midpoint Rule</div>
+            </div>
+          </button>
+          <button class="method-btn method-btn-trap" data-method="trapezoid" onclick="selectMethod('trapezoid', this)">
+            <div class="method-icon method-icon-trap">⌇</div>
+            <div class="method-info">
+              <div class="method-name">Kaidah Trapesium</div>
+              <div class="method-desc">Trapezoidal Rule</div>
+            </div>
+          </button>
+        </div>
+
+        <!-- Function Input -->
+        <div class="input-group">
+          <label class="input-label">FUNGSI f(x)</label>
+          <div class="input-wrapper">
+            <span class="input-prefix">f(x) =</span>
+            <input type="text" id="funcInput" class="input-field" value="x^2" placeholder="contoh: x^2, sin(x), e^x" />
+          </div>
+          <div class="func-presets">
+            <span class="preset-label">Preset:</span>
+            <button class="preset-btn" onclick="setFunc('x^2')">x²</button>
+            <button class="preset-btn" onclick="setFunc('sin(x)')">sin(x)</button>
+            <button class="preset-btn" onclick="setFunc('cos(x)')">cos(x)</button>
+            <button class="preset-btn" onclick="setFunc('e^x')">eˣ</button>
+            <button class="preset-btn" onclick="setFunc('x^3 - 2*x')">x³-2x</button>
+            <button class="preset-btn" onclick="setFunc('1/x')">1/x</button>
+          </div>
+        </div>
+
+        <!-- Interval -->
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">BATAS BAWAH (a)</label>
+            <input type="number" id="lowerBound" class="input-field" value="0" step="0.1" />
+          </div>
+          <div class="input-group">
+            <label class="input-label">BATAS ATAS (b)</label>
+            <input type="number" id="upperBound" class="input-field" value="2" step="0.1" />
+          </div>
+        </div>
+
+        <!-- Tolerance untuk Auto-Calculate n -->
+        <div class="input-group">
+          <label class="input-label">TOLERANSI ERROR TARGET (ε)</label>
+          <div class="input-wrapper">
+            <span class="input-prefix">ε ≤</span>
+            <input type="text" id="targetTolerance" class="input-field" value="0.001" placeholder="contoh: 0.0001" />
+          </div>
+          <span class="input-hint">Sistem akan otomatis menghitung jumlah subinterval (n) agar error ≤ toleransi</span>
+        </div>
+
+        <!-- Display untuk n yang sudah dihitung (otomatis) -->
+        <div class="input-group">
+          <label class="input-label">JUMLAH SUBINTERVAL (n) - OTOMATIS</label>
+          <div class="auto-n-display">
+            <div class="stat-card">
+              <div class="stat-label">Nilai n</div>
+              <div class="stat-value" id="autoNValue">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Status</div>
+              <div class="stat-value" id="autoNStatus" style="color: #9ca3af;">Hitung dulu</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rectangle variant (only for segiempat) -->
+        <div class="input-group" id="variantGroup">
+          <label class="input-label">VARIASI SEGIEMPAT</label>
+          <div class="variant-selector">
+            <button class="variant-btn active" data-v="left" onclick="selectVariant('left', this)">Kiri</button>
+            <button class="variant-btn" data-v="right" onclick="selectVariant('right', this)">Kanan</button>
+          </div>
+        </div>
+
+        <!-- Trapezoid info (only for trapezoid) -->
+        <div class="input-group trap-info" id="trapInfo" style="display:none">
+          <div class="trap-formula-inline">
+            <span class="trap-formula-label">RUMUS:</span>
+            <span class="trap-formula-val">(h/2) · [f(a) + 2Σf(xᵢ) + f(b)]</span>
+          </div>
+        </div>
+
+
+
+        <!-- Calculate Button -->
+        <button class="calc-btn" onclick="calculate()">
+          <span class="calc-btn-text">HITUNG INTEGRAL</span>
+          <span class="calc-btn-icon">∫</span>
+        </button>
+
+        <!-- API Status -->
+        <div class="api-status" id="apiStatus">
+          <span class="status-dot"></span>
+          <span id="statusText">Siap menghitung</span>
+        </div>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="panel panel-result">
+        <div class="panel-header">
+          <span class="panel-title">⟨ HASIL ⟩</span>
+          <button class="export-btn" onclick="exportResult()">↗ Export</button>
+        </div>
+
+        <div class="result-main" id="resultMain">
+          <div class="result-placeholder">
+            <div class="placeholder-icon">∫</div>
+            <div class="placeholder-text">Masukkan parameter<br />dan tekan HITUNG</div>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display:none">
+          <div class="stat-card">
+            <div class="stat-label">Metode</div>
+            <div class="stat-value" id="statMethod">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Subinterval</div>
+            <div class="stat-value" id="statN">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Lebar h</div>
+            <div class="stat-value" id="statH">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Error Est.</div>
+            <div class="stat-value" id="statError">—</div>
+          </div>
+        </div>
+
+        <div class="exact-panel" id="exactPanel" style="display:none">
+          <div class="exact-header">
+            <span class="exact-header-label">⟨ PERBANDINGAN NILAI EKSAK ⟩</span>
+          </div>
+          <div class="exact-body" id="exactBody"></div>
+        </div>
+
+        <div class="steps-panel" id="stepsPanel" style="display:none">
+          <div class="steps-header">
+            <span>LANGKAH PERHITUNGAN</span>
+            <button class="toggle-btn" onclick="toggleSteps()">Tampilkan ▼</button>
+          </div>
+          <div class="steps-content" id="stepsContent" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visualizer Section -->
+  <section id="visualizer" class="section">
+    <div class="section-label">VISUALISASI</div>
+    <h2 class="section-title">Grafik Interaktif</h2>
+
+    <div class="viz-layout">
+      <div class="panel viz-panel">
+        <div class="panel-header">
+          <span class="panel-title">⟨ GRAFIK FUNGSI ⟩</span>
+          <div class="viz-controls">
+            <button class="viz-btn active" onclick="setVizMode('bars', this)">Batang</button>
+            <button class="viz-btn" onclick="setVizMode('curve', this)">Kurva</button>
+            <button class="viz-btn" onclick="setVizMode('both', this)">Keduanya</button>
+          </div>
+        </div>
+        <canvas id="vizCanvas" width="800" height="400"></canvas>
+        <div class="canvas-legend">
+          <div class="legend-item"><span class="legend-box" style="background:var(--accent)"></span> Area Aproksimasi</div>
+          <div class="legend-item"><span class="legend-box" style="background:#ff6b35"></span> Fungsi Sebenarnya</div>
+          <div class="legend-item" id="legendTrap" style="display:none"><span class="legend-box" style="background:var(--accent3)"></span> Titik Trapesium</div>
+        </div>
+      </div>
+
+      <div class="panel conv-panel">
+        <div class="panel-header">
+          <span class="panel-title">⟨ KONVERGENSI ERROR ⟩</span>
+        </div>
+        <canvas id="convCanvas" width="400" height="300"></canvas>
+        <div class="conv-note">Semakin besar n, semakin kecil error</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Theory Section -->
+  <section id="theory" class="section">
+    <div class="section-label">TEORI</div>
+    <h2 class="section-title">Dasar Teori</h2>
+
+    <div class="theory-layout">
+      <div class="theory-card">
+        <div class="theory-icon">▬</div>
+        <h3 class="theory-title">Kaidah Segiempat</h3>
+        <p class="theory-desc">
+          Metode aproksimasi integral dengan membagi interval [a,b] menjadi n subinterval sama lebar,
+          kemudian membangun persegi panjang menggunakan titik ujung kiri atau kanan.
+        </p>
+        <div class="formula-box">
+          <div class="formula">∫ f(x)dx ≈ h · Σ f(xᵢ)</div>
+          <div class="formula-sub">h = (b−a)/n</div>
+        </div>
+        <div class="theory-props">
+          <div class="prop"><span class="prop-key">Order</span><span class="prop-val">O(h)</span></div>
+          <div class="prop"><span class="prop-key">Error</span><span class="prop-val">O(h²)</span></div>
+          <div class="prop"><span class="prop-key">Tipe</span><span class="prop-val">Newton-Cotes</span></div>
+        </div>
+      </div>
+
+      <div class="theory-card theory-card-accent">
+        <div class="theory-icon">◆</div>
+        <h3 class="theory-title">Kaidah Titik Tengah</h3>
+        <p class="theory-desc">
+          Metode yang menggunakan nilai fungsi di titik tengah setiap subinterval.
+          Umumnya lebih akurat dibanding kaidah segiempat biasa karena error orde lebih tinggi.
+        </p>
+        <div class="formula-box">
+          <div class="formula">∫ f(x)dx ≈ h · Σ f(xᵢ₊½)</div>
+          <div class="formula-sub">xᵢ₊½ = (xᵢ + xᵢ₊₁)/2</div>
+        </div>
+        <div class="theory-props">
+          <div class="prop"><span class="prop-key">Order</span><span class="prop-val">O(h²)</span></div>
+          <div class="prop"><span class="prop-key">Error</span><span class="prop-val">O(h³)</span></div>
+          <div class="prop"><span class="prop-key">Tipe</span><span class="prop-val">Newton-Cotes</span></div>
+        </div>
+      </div>
+
+      <!-- TRAPESIUM -->
+      <div class="theory-card theory-card-trap">
+        <div class="theory-icon theory-icon-trap">⌇</div>
+        <h3 class="theory-title">Kaidah Trapesium</h3>
+        <p class="theory-desc">
+          Metode yang menghubungkan dua titik ujung setiap subinterval dengan garis lurus,
+          membentuk trapesium. Lebih akurat dari segiempat karena menggunakan kedua ujung interval.
+        </p>
+        <div class="formula-box formula-box-trap">
+          <div class="formula formula-trap">∫ f(x)dx ≈ h/2 · [f(x₀) + 2Σf(xᵢ) + f(xₙ)]</div>
+          <div class="formula-sub">h = (b−a)/n, koef ujung = 1, koef interior = 2</div>
+        </div>
+        <div class="theory-props">
+          <div class="prop"><span class="prop-key">Order</span><span class="prop-val">O(h²)</span></div>
+          <div class="prop"><span class="prop-key">Error</span><span class="prop-val">O(h³)</span></div>
+          <div class="prop"><span class="prop-key">Tipe</span><span class="prop-val">Newton-Cotes</span></div>
+        </div>
+      </div>
+
+      <!-- Comparison Table -->
+      <div class="comparison-card">
+        <h3 class="theory-title">Perbandingan Metode</h3>
+        <div class="comparison-table">
+          <div class="comp-row comp-header">
+            <div>Aspek</div>
+            <div>Segiempat</div>
+            <div>Titik Tengah</div>
+            <div>Trapesium</div>
+          </div>
+          <div class="comp-row">
+            <div>Akurasi Global</div>
+            <div class="comp-bad">O(h)</div>
+            <div class="comp-good">O(h²)</div>
+            <div class="comp-good">O(h²)</div>
+          </div>
+          <div class="comp-row">
+            <div>Error Lokal</div>
+            <div class="comp-bad">O(h²)</div>
+            <div class="comp-mid">O(h³)</div>
+            <div class="comp-mid">O(h³)</div>
+          </div>
+          <div class="comp-row">
+            <div>Evaluasi f(x) / langkah</div>
+            <div>1×</div>
+            <div>1×</div>
+            <div>2× (ujung)</div>
+          </div>
+          <div class="comp-row">
+            <div>Titik yang digunakan</div>
+            <div>Ujung kiri/kanan</div>
+            <div>Titik tengah</div>
+            <div class="comp-good">Kedua ujung ✓</div>
+          </div>
+          <div class="comp-row">
+            <div>Rekomendasi</div>
+            <div>n besar</div>
+            <div class="comp-good">n kecil ✓</div>
+            <div class="comp-good">Umum ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- History Section -->
+  <section id="history" class="section">
+    <div class="section-label">RIWAYAT</div>
+    <h2 class="section-title">Riwayat Perhitungan</h2>
+    <div class="history-controls">
+      <button class="ghost-btn" onclick="clearHistory()">🗑 Hapus Semua</button>
+      <button class="ghost-btn" onclick="exportHistory()">↗ Export CSV</button>
+    </div>
+    <div class="history-list" id="historyList">
+      <div class="history-empty">Belum ada perhitungan</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">Metode Numeric</div>
+      <div class="footer-info">
+        <span class="sep">(</span>
+        <span>Kelompok 7</span>
+        <span class="sep">-></span>
+        <span>Chairil Apriansyah</span>
+        <span class="sep">&</span>
+        <span>Nabil</span>
+        <span class="sep">)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/NumeriCalcApplication.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/util/SymbolicIntegrator.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/model/request/IntegrationRequest.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/util/FunctionParser.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/exception/GlobalExceptionHandler.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/service/IntegrationService.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/controller/IntegrationController.java
+/home/chairil/kalkulator_integrasiNumeric/src/main/java/com/chairil/metode_numerik/model/response/IntegrationResponse.java
